@@ -9,8 +9,9 @@ Public Class Main
     Protected baseFrequency As Double
     Protected fippleDiam As Double
     Protected previousFreq As Double
-    Protected firstTime As Boolean
+    Protected firstTime As Boolean 'Whether the program is being ran for the first time
     Protected numberOfHoles As Integer
+    Const SPEED_OF_SOUND As Double = 13503.9 'The speed of sound in inches per second
 #End Region
 
     Private Sub Main_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -25,7 +26,7 @@ Public Class Main
     ''' <returns>DOUBLE - The Volume of the Ocarina.</returns>
     Private Function CalculateVolume(F As Double, D As Double) As Double
 
-        Dim V As Double = 1 / ((Math.Pow((F / 2148.14), 2)) / D)
+        Dim V As Double = 1 / ((Math.Pow((F / (SPEED_OF_SOUND / (2 * Math.PI))), 2)) / D)
         Return V
     End Function
 
@@ -42,7 +43,7 @@ Public Class Main
         Dim A = (Math.PI * Math.Pow((D / 2), 2))
 
         'Calculates the thickness
-        Dim T As Double = ((A / 4) * Math.Pow(13503.9 / (2 * Math.PI), 2)) / (((Math.Pow(F, 2)) / 4) * V)
+        Dim T As Double = ((A / 4) * Math.Pow(SPEED_OF_SOUND / (2 * Math.PI), 2)) / (((Math.Pow(F, 2)) / 4) * V)
 
         Return T
     End Function
@@ -57,7 +58,7 @@ Public Class Main
 
     Private Function CalculateTotalOpenArea(V As Double, T As Double, F As Double) As Double
 
-        Dim totalArea = (((Math.Pow(F, 2) / 4 * V * T)) / Math.Pow((13503.9 / (2 * Math.PI)), 2))
+        Dim totalArea = (((Math.Pow(F, 2) / 4 * V * T)) / Math.Pow((SPEED_OF_SOUND / (2 * Math.PI)), 2))
 
         Return totalArea
     End Function
@@ -204,19 +205,19 @@ Public Class Main
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub HelpBttn_Click(sender As Object, e As EventArgs) Handles helpBttn.Click
-        MessageBox.Show("This program calculates the diameter of finger holes for an ocarina (or possibly some other similar instrument). I have not found a single source that showed how to do this either mathematically or programatically, so I decided figure it out myself.
+        MessageBox.Show("This program calculates the diameter of finger holes for an ocarina (or possibly some other similar instrument). I have not found a single source that showed how to do this either mathematically or programmatically, so I decided figure it out myself.
 
-All units are in inches and hertz.
+All units are in inches and hertz. (I hope you like the Imperial System)
 
-To start, enter a desired fipple diameter. All other measurements are based off of this value, so you'll need to choose something semi random for this. For an AC ocarina, this could be around 0.15 inches.
+To start, enter a desired fipple diameter. All other measurements are based off of this value, so you'll need to choose something semi-random for this. For an AC ocarina, this could be around 0.3 inches.
 
-Next, enter the base frequency of the ocarina. This is the frequency where every finger hole is closed.
+Next, enter the base frequency of the ocarina. This is the frequency where every finger hole is closed (including sub holes, if they are to be added).
 
-Now here's the funky part: The way the diameter of holes are calculated is by the total area of open holes. So to start calculating the holes, you'll need to choose a note higher than what you want in order for it to be physically open. When you calculate the last hole (On a 12 hole AC Ocarina this would be F with a frequency of 1396.91 Hz), that hole will be open if you try to physically play the note, so you won't need a higher note frequency for it.
+Now here's the funky part: The way the diameter of holes is calculated is by the total area of open holes. So, to start calculating the holes, you'll need to choose a note higher than what you want for it to be physically open. When you calculate the last hole (On a 12 hole AC Ocarina this would be F with a frequency of 1396.91 Hz), that hole will be open if you try to physically play the note, so you won't need a higher note frequency for it.
 
-After each caluclation, the program spits out a text file containing the measurements in the same folder so you won't have to manually record them.
+After each calculation, the program spits out a text file containing the measurements in the same folder so you won't have to manually record them.
 
-If you add in a number wrong, you have to press restart and try again. The hole diameters are linked to eachother, which means you can't just ignore that you just added an unwanted hole into your measurement calculations!
+If you add in a number wrong, you must press restart and try again. The hole diameters are linked to each other, which means you can't just ignore that you just added an unwanted hole into your measurement calculations!
 
 
 Created by Ethan Strike, August 30th, 2019.")
@@ -234,13 +235,14 @@ F = Frequency
 D = Diameter
 L = Length
 W = Width
+SPEED_OF_SOUND = Speed of Sound in Inches per Second
 
-Calculate Frequency (from Diameter and Volume) = 2148.14 * ((D / V)^(1/2))
-Calculate Volume (from Frequency and Diameter) = 1 / ((((F / 2148.14)^2)) / D)
+Calculate Frequency (from Diameter and Volume) = ((SPEED_OF_SOUND / (2 * PI)) / (2 * PI) * ((D / V)^(1/2))
+Calculate Volume (from Frequency and Diameter) = 1 / ((((F / (SPEED_OF_SOUND / (2 * PI)))^2)) / D)
 Calculate Diameter (from Length and Width) = 2 * (((l * w) / Math.PI)^(1/2))
-Calculate Diameter (from Volume and Frequency) =  ((F / 2148.14)^2) * V
-Calculate Thickness (from Volume, Frequency, and Area) = ((A / 4) * (13503.9 / (2 * PI)^2)) / (((F^2) / 4) * V)
-Calculate Total Area (from Volume, Thickness, Frequency) = (((F^2) / 4 * V * T)) / ((13503.9 / (2 * Math.PI))^2)
+Calculate Diameter (from Volume and Frequency) =  ((F / (SPEED_OF_SOUND / (2 * PI)))^2) * V
+Calculate Thickness (from Volume, Frequency, and Area) = ((A / 4) * (SPEED_OF_SOUND / (2 * PI)^2)) / (((F^2) / 4) * V)
+Calculate Total Area (from Volume, Thickness, Frequency) = (((F^2) / 4 * V * T)) / ((SPEED_OF_SOUND / (2 * Math.PI))^2)
 Calculate Diameter (from Area of a Hole) = Math.sqrt((A * 4) / PI)
 Calculate Area of Fipple (from Width and Circular Fipple Diameter) = (PI * ((D/2)^2))/W")
     End Sub
